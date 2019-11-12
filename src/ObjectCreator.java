@@ -3,12 +3,14 @@ import java.util.Scanner;
 
 public class ObjectCreator {
 
-    private static ArrayList<Object> list = new ArrayList<Object>();
     private static Scanner scanner = new Scanner(System.in);
-    public static void main(String[] args) {
+
+    public ArrayList<Object> Creator() {
+        ArrayList<Object> list = new ArrayList<>();
         boolean check = true;
         while(check) {
             int selection = Decision();
+
             switch (selection) {
                 case 1:
                     list.add(CreateObjectPrimitiveVariables());
@@ -33,9 +35,10 @@ public class ObjectCreator {
                     break;
             }
         }
+        return list;
     }
 
-    public static int Decision() {
+    private int Decision() {
         System.out.println("Please select the type of object you would like to create:\n" +
                 "1) Object with only primitive instance variables.\n" +
                 "2) Object that contains references to other objects.\n" +
@@ -46,47 +49,44 @@ public class ObjectCreator {
         return scanner.nextInt();
     }
 
-    public static void PrintObjectCreation(String object){
+    private static void PrintObjectCreation(String object){
         System.out.println("------------------------------------------------------------\n" +
                            "Creating Object with " + object+ "...\n" +
                            "------------------------------------------------------------");
     }
 
-    public static void printObjectCreated(String createdObject){
+    private static void printObjectCreated(String createdObject){
         System.out.println(
                         "------------------------------------------------------------\n" +
                         "Finished Creation: Object of " + createdObject +
                         "\n------------------------------------------------------------");
     }
 
-    public static int validIntegerCheck(){
+    private static int validIntegerCheck(){
         while(!scanner.hasNextInt()) {
             System.out.print("Invalid Entry. Please try again: ");
             scanner.next();
         }
-        int A = scanner.nextInt();
-        return A;
+        return scanner.nextInt();
     }
 
-    public static double validDoubleCheck(){
+    private static double validDoubleCheck(){
         while(!scanner.hasNextDouble()) {
             System.out.print("Invalid Entry. Please try again: ");
             scanner.next();
         }
-        double B = scanner.nextDouble();
-        return B;
+        return scanner.nextDouble();
     }
 
-    public static boolean validBooleanCheck(){
+    private static boolean validBooleanCheck(){
         while (!scanner.hasNextBoolean()) {
             System.out.print("Invalid Entry. Please try again: ");
             scanner.next();
         }
-        Boolean C = scanner.nextBoolean();
-        return C;
+        return scanner.nextBoolean();
     }
 
-    public static ObjectPrimitiveVariables CreateObjectPrimitiveVariables() {
+    private static ObjectPrimitiveVariables CreateObjectPrimitiveVariables() {
         PrintObjectCreation("Primitive Variables");
 
         System.out.print("Enter an integer value: ");
@@ -106,17 +106,21 @@ public class ObjectCreator {
         return opv;
     }
 
-    public static ObjectReferenceObjects CreateObjectReferenceObjects() {
+    private static ObjectReferenceObjects CreateObjectReferenceObjects() {
         PrintObjectCreation("Referential Object");
+
         System.out.println("Initializing Reference: Object of Primitive Variables...");
+
         ObjectPrimitiveVariables refOPV = CreateObjectPrimitiveVariables();
+
         ObjectReferenceObjects oro = new ObjectReferenceObjects(refOPV);
         printObjectCreated("Referential Object");
         return oro;
     }
 
-    public static ObjectPrimitiveArray CreateObjectPrimitiveArray() {
+    private static ObjectPrimitiveArray CreateObjectPrimitiveArray() {
         PrintObjectCreation("Primitive Array");
+
         System.out.print("Enter length of array: ");
         int length = validIntegerCheck();
         int[] primArray = new int[length];
@@ -133,7 +137,7 @@ public class ObjectCreator {
         return opa;
     }
 
-    public static ObjectReferenceArray CreateObjectReferenceArray() {
+    private static ObjectReferenceArray CreateObjectReferenceArray() {
         PrintObjectCreation("Reference Array");
         System.out.print("Enter length of array: ");
         int length = validIntegerCheck();
@@ -152,16 +156,15 @@ public class ObjectCreator {
 
     }
 
-    public static ObjectJavaCollection CreateObjectJavaCollection() {
+    private static ObjectJavaCollection CreateObjectJavaCollection() {
         PrintObjectCreation("Java Collection");
 
         System.out.print("Enter number of objects to add to collection: ");
         int length = validIntegerCheck();
 
         ArrayList<ObjectPrimitiveVariables> list = new ArrayList<>();
-        for (int i = 0; i<length; i++) {
+        for (int i = 0; i<length; i++)
             list.add(CreateObjectPrimitiveVariables());
-        }
 
         ObjectJavaCollection ojc = new ObjectJavaCollection(list);
         printObjectCreated("Java Collection");
