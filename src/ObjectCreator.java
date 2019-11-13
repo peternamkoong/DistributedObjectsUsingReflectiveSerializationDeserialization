@@ -70,21 +70,21 @@ public class ObjectCreator {
         return scanner.nextInt();
     }
 
-    private static double validDoubleCheck(){
-        while(!scanner.hasNextDouble()) {
-            System.out.print("Invalid Entry. Please try again: ");
-            scanner.next();
-        }
-        return scanner.nextDouble();
-    }
-
-    private static boolean validBooleanCheck(){
-        while (!scanner.hasNextBoolean()) {
-            System.out.print("Invalid Entry. Please try again: ");
-            scanner.next();
-        }
-        return scanner.nextBoolean();
-    }
+//    private static double validDoubleCheck(){
+//        while(!scanner.hasNextDouble()) {
+//            System.out.print("Invalid Entry. Please try again: ");
+//            scanner.next();
+//        }
+//        return scanner.nextDouble();
+//    }
+//
+//    private static boolean validBooleanCheck(){
+//        while (!scanner.hasNextBoolean()) {
+//            System.out.print("Invalid Entry. Please try again: ");
+//            scanner.next();
+//        }
+//        return scanner.nextBoolean();
+//    }
 
     private static ObjectPrimitiveVariables CreateObjectPrimitiveVariables() {
         PrintObjectCreation("Primitive Variables");
@@ -93,13 +93,13 @@ public class ObjectCreator {
         int A = validIntegerCheck();
         System.out.println("Integer A has been set to " + A + ".");
 
-        System.out.print("Enter a Double value: ");
-        double B = validDoubleCheck();
-        System.out.println("Double B has been set to " + B + ".");
+        System.out.print("Enter a integer value: ");
+        int B = validIntegerCheck();
+        System.out.println("Integer B has been set to " + B + ".");
 
-        System.out.print("Enter a Boolean value: ");
-        boolean C = validBooleanCheck();
-        System.out.println("Boolean C has been set to " + C + ".");
+        System.out.print("Enter a integer value: ");
+        int C = validIntegerCheck();
+        System.out.println("Integer C has been set to " + C + ".");
 
         ObjectPrimitiveVariables opv = new ObjectPrimitiveVariables(A,B,C);
         printObjectCreated("Primitive Variables");

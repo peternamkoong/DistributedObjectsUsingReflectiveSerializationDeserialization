@@ -1,11 +1,13 @@
 public class ObjectPrimitiveVariables {
     private int A;
-    private double B;
-    private boolean C;
+    private int B;
+    private int C;
 
-    public ObjectPrimitiveVariables(int aInt, double bDouble, boolean cBool) {
+    public ObjectPrimitiveVariables(){}
+
+    public ObjectPrimitiveVariables(int aInt, int bInt, int cInt) {
         A = aInt;
-        B = bDouble;
-        C = cBool;
+        B = bInt;
+        C = cInt;
     }
 }

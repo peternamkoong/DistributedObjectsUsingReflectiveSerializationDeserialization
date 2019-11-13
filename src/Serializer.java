@@ -1,73 +1,66 @@
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.IdentityHashMap;
 
 import org.jdom2.*;
-import org.jdom2.output.Format;
-import org.jdom2.output.XMLOutputter;
+
 
 public class Serializer {
 
+    private IdentityHashMap ihm = new IdentityHashMap<>();
 
-    public Document serialize(Object obj) {
+    public Document serialize(ArrayList<Object> obj) {
 
         Element rootElement = new Element("serialized");
         Document doc = new Document(rootElement);
-        IdentityHashMap  ihm = new IdentityHashMap();
-
-
-        rootElement.addContent(serializeObject(obj,ihm));
-
-
-        try {
-            new XMLOutputter().output(doc, System.out);
-            XMLOutputter xmlOutput = new XMLOutputter();
-            xmlOutput.setFormat(Format.getPrettyFormat());
-            xmlOutput.output(doc, new FileWriter("Serialized.xml"));
-        }
-        catch (IOException e) {
-            e.printStackTrace();
+        String id = null;
+        for (int i = 0; i<obj.size();i++) {
+            id = getIdentifier(obj, ihm);
+            rootElement.addContent(serializeObject(obj.get(i), rootElement, id));
         }
         return doc;
 
     }
 
-    public static Element serializeField(Field fields) {
+    public Element serializeField(Field fields) {
         Element fieldElement = new Element("field");
         fieldElement.setAttribute(new Attribute("fieldname",fields.getName()));
-        fieldElement.setAttribute(new Attribute("declaringclass", fields.getDeclaringClass().getSimpleName()));
+        fieldElement.setAttribute(new Attribute("declaringclass", fields.getDeclaringClass().getName()));
         return fieldElement;
     }
 
-    public static Element serializeArray(Class fieldType, Object value, IdentityHashMap ihm) {
-        Element arrayElement = new Element("Object");
-        String id = Integer.toString(ihm.size());
-        ihm.put(id,value);
-        arrayElement.setAttribute(new Attribute("class",fieldType.getSimpleName()));
+    public Element serializeArray(Class fieldType, Object value, String id) {
+        Element arrayElement = new Element("object");
+        arrayElement.setAttribute(new Attribute("class",fieldType.getName()));
         arrayElement.setAttribute(new Attribute("id",id));
         arrayElement.setAttribute(new Attribute("length", String.valueOf(Array.getLength(value))));
         return arrayElement;
     }
 
-    public static Element serializePrimitive(Object value) {
+    public Element serializePrimitive(Object value) {
         Element valueElement = new Element("value");
         valueElement.setText(value.toString());
         return valueElement;
     }
 
-    public static Element serializeReference(Object value) {
+    public Element serializeReference(Object value, String id) {
         Element referenceElement = new Element("Reference");
+        referenceElement.setText(id);
         return referenceElement;
     }
 
-    public static Element serializeObject(Object obj, IdentityHashMap ihm) {
-        Class c = obj.getClass();
+    public String getIdentifier(Object obj, IdentityHashMap ihm){
         String id = Integer.toString(ihm.size());
-        ihm.put(id, obj);
-        Element objectElement = new Element("Object");
+        ihm.put(id,obj);
+        return id;
+    }
+
+    public Element serializeObject(Object obj,Element root, String id) {
+        Class c = obj.getClass();
+
+        Element objectElement = new Element("object");
         objectElement.setAttribute(new Attribute("class", c.getName()));
         objectElement.setAttribute(new Attribute("id", id));
 
@@ -83,8 +76,9 @@ public class Serializer {
 
                 if(fieldType.isArray()) {
                     Class arrayType = fieldType.getComponentType();
-                    Element arrayElement = serializeArray(fieldType, value, ihm);
-                    fieldElement.addContent(arrayElement);
+                    String arrayId = getIdentifier(value, ihm);
+                    Element arrayElement = serializeArray(fieldType, value, arrayId);
+                    root.addContent(arrayElement);
                     if(arrayType.isPrimitive()) {
                         for (int i = 0; i < Array.getLength(value); i++) {
                             Element newElement = serializePrimitive(Array.get(value, i));
@@ -92,13 +86,13 @@ public class Serializer {
                         }
                     }
                     else{
-                        System.out.println("Length:" + Array.getLength(value));
                         for (int i = 0; i < Array.getLength(value); i++) {
                             Object index = Array.get(value, i);
                             if (index!=null) {
-                                Element newElement = serializeReference(index);
-                                newElement.addContent(serializeObject(index, ihm));
-                                arrayElement.addContent(newElement);
+                                String newId = getIdentifier(index, ihm);
+                                Element referenceElement = serializeReference(index,newId);
+                                arrayElement.addContent(referenceElement);
+                                root.addContent(serializeObject(index, root, newId));
                             }
                         }
                     }
@@ -108,11 +102,12 @@ public class Serializer {
                     fieldElement.addContent(valueElement);
                 }
                 else {
-                    Element referenceElement = serializeReference(value);
+                    String newId = getIdentifier(value, ihm);
+                    Element referenceElement = serializeReference(value,newId);
                     fieldElement.addContent(referenceElement);
 
-                    Element newElement = serializeObject(value, ihm);
-                    referenceElement.addContent(newElement);
+                    Element newElement = serializeObject(value,root, newId);
+                    root.addContent(newElement);
                 }
             }
         }
