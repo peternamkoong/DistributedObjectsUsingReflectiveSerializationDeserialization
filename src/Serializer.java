@@ -79,12 +79,14 @@ public class Serializer {
                     Class arrayType = fieldType.getComponentType();
                     String arrayId = getIdentifier(value, ihm);
                     Element arrayElement = serializeArray(fieldType, value, arrayId);
-                    root.addContent(arrayElement);
+                    root.addContent(root.getContentSize(), arrayElement);
                     if(arrayType.isPrimitive()) {
                         for (int i = 0; i < Array.getLength(value); i++) {
                             Element newElement = serializePrimitive(Array.get(value, i));
                             arrayElement.addContent(newElement);
                         }
+                        Element referenceElement = serializeReference(value,arrayId);
+                        fieldElement.addContent(referenceElement);
                     }
                     else{
                         for (int i = 0; i < Array.getLength(value); i++) {
@@ -96,6 +98,8 @@ public class Serializer {
                                 root.addContent(serializeObject(index, root, newId));
                             }
                         }
+                        Element referenceElement = serializeReference(value,arrayId);
+                        fieldElement.addContent(referenceElement);
                     }
                 }
                 else if (fieldType.isPrimitive()){

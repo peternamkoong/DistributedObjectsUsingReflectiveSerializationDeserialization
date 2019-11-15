@@ -23,13 +23,15 @@ public class Inspector {
 
         String tab = tabDepth(depth); //tabs based on depth
 
-        if (c.isArray()) { //checks if the passed class is an array right away
-            Class arrayClass = c.getComponentType();
-            System.out.println(tab + "Component Type: " + arrayClass.getName());
-            Object[] classValue = (Object[]) obj;
-            inspectArray(classValue, recursive, depth,tab);
-        }
-        else {
+//        if (c.isArray()) { //checks if the passed class is an array right away
+//            Class arrayClass = c.getComponentType();
+//            System.out.println(tab + "Component Type: " + arrayClass.getName());
+//            if(!c.getComponentType().isPrimitive()){
+//                Object[] classValue = (Object[]) obj;
+//                inspectArray(classValue, recursive, depth, tab);
+//            }
+//        }
+//        else {
             inspectInformation(c,tab);                      //inspect Class Name and Super Class Name
             //inspectInterface(c, obj, recursive, tab);       //inspect Interface of the current class
             inspectConstructor(c, obj, recursive, tab);     //inspect Constructors of the current class
@@ -37,7 +39,7 @@ public class Inspector {
             inspectField(c, obj, recursive, depth, tab);    //inspect Fields of the current class
             //inspectSuperClass(c, obj, recursive, depth);    //recursively inspect superclass, if possible
         }
-    }
+    //}
 
     /**
      * tabDepth method which creates a string of N tabs, dependent on the depth
