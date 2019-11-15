@@ -46,7 +46,7 @@ public class Serializer {
     }
 
     public Element serializeReference(Object value, String id) {
-        Element referenceElement = new Element("Reference");
+        Element referenceElement = new Element("reference");
         referenceElement.setText(id);
         return referenceElement;
     }
