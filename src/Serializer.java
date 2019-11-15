@@ -19,6 +19,7 @@ public class Serializer {
         for (int i = 0; i<obj.size();i++) {
             id = getIdentifier(obj, ihm);
             rootElement.addContent(serializeObject(obj.get(i), rootElement, id));
+
         }
         return doc;
 
